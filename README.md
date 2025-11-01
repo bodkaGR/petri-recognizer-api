@@ -28,7 +28,7 @@ petri-recognizer-api is a **REST API service** designed to:
 
 ```bash
 git clone https://github.com/bodkaGR/petri-recognizer-api.git
-cd petri-recognizer-api
+cd petri-recognizer-controllers
 ```
 
 2. Create and activate a virtual environment

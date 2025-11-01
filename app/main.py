@@ -1,13 +1,6 @@
 from fastapi import FastAPI
+from app.controllers.recognize_controller import router as recognize_router
 
-app = FastAPI()
+app = FastAPI(title="Petri nets recognizer FastAPI", version="0.1")
 
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+app.include_router(recognize_router, prefix="/api")
