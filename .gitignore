@@ -1,6 +1,16 @@
-.idea
-.venv
+# Python
+**/__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
 .env
+
 /data/output/
 /data/working/
-app/__pycache__/
