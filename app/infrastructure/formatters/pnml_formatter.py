@@ -23,8 +23,5 @@ class PNMLFormatter(IFormatter):
         template = template_env.get_template(f"template.{FileFormat.PNML}.jinja")
 
         # Rendering model into PNML
-        rendered_model_pnml = template.render(
-            {"places": model.places, "transitions": model.transitions, "arcs": model.arcs}
-        )
-
+        rendered_model_pnml = template.render(model.to_pnml_dict())
         return rendered_model_pnml

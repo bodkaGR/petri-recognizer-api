@@ -17,8 +17,8 @@ class RecognitionFacade:
         file_format = FileFormat.from_string(requested_file_type)
 
         # Saving uploaded temporary files
-        image_path = self.file_handler.save_upload(image, ".png")
-        config_path = self.file_handler.save_upload(config, ".yaml")
+        image_path = self.file_handler.save_upload_tmp(image, ".png")
+        config_path = self.file_handler.save_upload_tmp(config, ".yaml")
 
         try:
             output_path, media_type = self.recognizer_service.recognize(image_path, config_path, file_format)

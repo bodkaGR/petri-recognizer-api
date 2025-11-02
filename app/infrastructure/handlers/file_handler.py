@@ -14,7 +14,7 @@ class FileHandler:
             f.write(content)
         return str(file_path)
 
-    def save_upload(self, upload_file: UploadFile, suffix: str) -> str:
+    def save_upload_tmp(self, upload_file: UploadFile, suffix: str) -> str:
         """Save uploaded file to a temporary local path"""
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             shutil.copyfileobj(upload_file.file, tmp)
