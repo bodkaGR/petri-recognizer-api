@@ -26,9 +26,9 @@ class PetriModel:
     def to_dict(self) -> dict:
         """Convert model to a serializable dictionary for JSON or templating"""
         return {
-            "places": [p.__dict__ for p in self.places],
-            "transitions": [t.__dict__ for t in self.transitions],
-            "arcs": [a.__dict__ for a in self.arcs],
+            "places": [p.to_dict() for p in self.places],
+            "transitions": [t.to_dict() for t in self.transitions],
+            "arcs": [a.to_dict() for a in self.arcs],
         }
 
     def to_pnml_dict(self) -> dict:

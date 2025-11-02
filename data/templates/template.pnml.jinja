@@ -13,7 +13,7 @@
                 <name>
                     <text>{% if place.get_name() != "" %}{{ place.get_name() }}{% else %}P{{ loop.index }}{% endif %}</text>
                 </name>
-                <toolspecific tool="sketch2pnml" />
+                <toolspecific tool="petri-recognizer-api" />
                 <graphics>
                     <position x="{{place.center.x}}" y="{{place.center.y}}" />
                     <dimension x="{{place.radius * 2}}" y="{{place.radius * 2}}" />
@@ -28,7 +28,7 @@
                 <name>
                     <text>{% if transition.get_name() != "" %}{{ transition.get_name() }}{% else %}T{{ loop.index }}{% endif %}</text>
                 </name>
-                <toolspecific tool="sketch2pnml"></toolspecific>
+                <toolspecific tool="petri-recognizer-api"></toolspecific>
                 <graphics>
                     <position x="{{transition.center.x}}" y="{{transition.center.y}}" />
                     <dimension x="{{transition.width}}" y="{{transition.height}}" />
@@ -37,7 +37,7 @@
             {% endfor %}
             {% for arc in arcs %}
             <arc id="{{arc.id}}" source="{{arc.source.id}}" target="{{arc.target.id}}">
-                <toolspecific tool="sketch2pnml" />
+                <toolspecific tool="petri-recognizer-api" />
                 <name>
                     <text>{% if arc.get_name() != "" %}{{ arc.get_name() }}{% else %}T{{ loop.index }}{% endif %}</text>
                 </name>

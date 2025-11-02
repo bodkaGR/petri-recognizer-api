@@ -41,6 +41,12 @@ class Point:
         """Returns the point as a numpy array."""
         return np.array([self.x, self.y], dtype=np.int32)
 
+    def to_dict(self):
+        return {
+            'x': self.x,
+            'y': self.y,
+        }
+
     def __repr__(self):
         return f"Point({self.x}, {self.y})"
 
@@ -155,6 +161,14 @@ class Line:
         else: # t > 1.0
             return point.get_distance_between_points(self.point2)
 
+    def to_dict(self):
+        return {
+            'pt1': self.point1.to_dict(),
+            'pt2': self.point2.to_dict(),
+            'angle': self.angle,
+            'length': self.length,
+        }
+
     def __repr__(self):
         return f"Line(start={self.point1}, end={self.point2}, angle={self.angle:.2f}, length={self.length:.2f})"
 
@@ -222,6 +236,15 @@ class Place:
         else:
             return ""
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'center': self.center.to_dict(),
+            'radius': self.radius,
+            'markers': self.markers,
+            'text': [t.value for t in self.text],
+        }
+
     def __repr__(self):
         return f"Place(center={self.center}, radius={self.radius})"
     
@@ -270,7 +293,17 @@ class Transition:
         angle = min_area_rect[2]
         # assert width >= height, "Width should be greater than or equal to height by definition of minAreaRect"
         return cls(center, width, height, angle, original_detection_data=contour)
-    
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'center': self.center.to_dict(),
+            'width': self.width,
+            'height': self.height,
+            'angle': self.angle,
+            'text': [t.value for t in self.text],
+        }
+
     def __repr__(self):
         return f"Transition(center={self.center}, height={self.height}, width={self.width}, angle={self.angle})"
     
@@ -328,6 +361,17 @@ class Arc:
         else:
             return ""
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'source': self.source.id if self.source else None,
+            'target': self.target.id if self.target else None,
+            'start_point': self.start_point.to_dict(),
+            'end_point': self.end_point.to_dict(),
+            'weight': self.weight,
+            'text': [t.value for t in self.text],
+        }
+
     def __repr__(self):
         return f"Arc(source={self.source}, target={self.target})"
     
@@ -357,6 +401,15 @@ class Text:
             (self.pt1.y + self.pt2.y) // 2
         )
         self.confidence = confidence
+
+    def to_dict(self):
+        return {
+            'value': self.value,
+            'pt1': self.pt1.to_dict(),
+            'pt2': self.pt2.to_dict(),
+            'center': self.center.to_dict(),
+            'confidence': self.confidence,
+        }
 
     def __repr__(self):
         return f"Text(value='{self.value}', box=({self.pt1.x},{self.pt1.y})-({self.pt2.x},{self.pt2.y}), conf={self.confidence:.2f})"
