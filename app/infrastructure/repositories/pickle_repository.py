@@ -7,7 +7,7 @@ from app.domain.models.petri_model import PetriModel
 from config.path_config import PLACES_PKL_PATH, TRANSITIONS_PKL_PATH, ARCS_PKL_PATH, ensure_directories_exist
 
 class PickleRepository(IRepository):
-    """Handles saving and loading recognition results."""
+    """Handles serialization and deserialization"""
 
     @override
     def save(self, model: PetriModel):

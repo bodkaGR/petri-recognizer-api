@@ -11,5 +11,5 @@ class IFormatter(ABC):
 
     @abstractmethod
     def format(self, model: PetriModel) -> str:
-        """Convert model into chosen format file and return its path"""
+        """Convert model into chosen format"""
         pass
