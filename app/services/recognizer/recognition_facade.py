@@ -8,21 +8,21 @@ from app.infrastructure.handlers.file_handler import FileHandler
 class RecognitionFacade:
     """Orchestrates recognition workflow"""
 
-    def __init__(self, recognizer_service: IRecognizerService, file_handler: FileHandler):
+    def __init__(self, recognizer_service: IRecognizerService):
         self.recognizer_service = recognizer_service
-        self.file_handler = file_handler
 
     async def recognize_from_uploads(self, image: UploadFile, config: UploadFile, requested_file_type: str):
         # Get file format from requested file type
         file_format = FileFormat.from_string(requested_file_type)
 
         # Saving uploaded temporary files
-        image_path = self.file_handler.save_upload_tmp(image, ".png")
-        config_path = self.file_handler.save_upload_tmp(config, ".yaml")
+        image_path = FileHandler.save_upload_tmp(image, ".png")
+        config_path = FileHandler.save_upload_tmp(config, ".yaml")
 
         try:
             output_path, media_type = self.recognizer_service.recognize(image_path, config_path, file_format)
             return output_path, media_type
         finally:
+            # Deleting temporary files
             for path in [image_path, config_path]:
-                self.file_handler.delete_upload_tmp(path)
+                FileHandler.delete_upload_tmp(path)

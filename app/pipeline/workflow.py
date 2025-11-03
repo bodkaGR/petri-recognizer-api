@@ -16,7 +16,7 @@ from app.pipeline.recognize_arrow import detect_arrowheads
 from app.domain.models.models import Place, Transition, Line, Point
 from skimage.morphology import skeletonize
 
-def recognize_graph(image_path: str, config_path: str) -> Dict[str, Any]:
+def recognize_graph(image_path: str, config_path: str, api_key: str) -> Dict[str, Any]:
     """
     Process an image to recognize a graph structure.
     
@@ -205,7 +205,7 @@ def recognize_graph(image_path: str, config_path: str) -> Dict[str, Any]:
     result["visualizations"]["paths"] = Image.fromarray(paths_visualization)
     
     # Step 10: Detect arrowheads and assign to paths
-    arrowhead_result = detect_arrowheads(image=img_color_resized, config=config)
+    arrowhead_result = detect_arrowheads(image=img_color_resized, config=config, api_key=api_key)
     paths_with_arrows, rejected_arrows_count = assign_arrowheads(found_paths_result, arrowhead_result, config)
     
     # # Visualize paths with arrows

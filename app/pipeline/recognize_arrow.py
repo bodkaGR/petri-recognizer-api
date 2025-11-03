@@ -10,7 +10,8 @@ import os
 
 def detect_arrowheads(
     image: np.ndarray,
-    config: dict # Expects the full loaded YAML config
+    config: dict, # Expects the full loaded YAML config
+    api_key: str
     # image_path: str = None # This was unused and can be removed if image is always passed as np.ndarray
 ) -> dict:
     """
@@ -24,9 +25,9 @@ def detect_arrowheads(
     version = 1
     
     # Load API key from environment variable
-    api_key = os.getenv('ROBOFLOW_API_KEY')
+    # api_key = os.getenv('ROBOFLOW_API_KEY')
     if not api_key:
-        raise ValueError("ROBOFLOW_API_KEY environment variable is not set. Please check your .env file.")
+        raise ValueError("ROBOFLOW_API_KEY environment variable is not set. Please check your request headers.")
     
     # Get confidence threshold from config (now directly under connection_processing)
     connection_config = config.get('connection_processing', {})
