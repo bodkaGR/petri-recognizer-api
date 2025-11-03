@@ -13,6 +13,8 @@ def is_number(n):
         is_number = False
     return is_number
 
+
+# TODO: split models in different files
 class Point:
     def __init__(self, x, y):
         self.x = int(x) # Ensure integer coordinates if they represent pixels

@@ -4,7 +4,6 @@ from enum import StrEnum, unique
 @unique
 class FileFormat(StrEnum):
     PNML = "pnml"
-    JSON = "json"
     JAVA_METHOD = "petriobj"
 
     @classmethod
