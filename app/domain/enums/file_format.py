@@ -1,4 +1,5 @@
 from enum import StrEnum, unique
+from app.infrastructure.exceptions.petri_exceptions import InvalidFileFormatError
 
 
 @unique
@@ -12,7 +13,7 @@ class FileFormat(StrEnum):
         for fmt in cls:
             if fmt.value == normalized:
                 return fmt
-        raise ValueError(f"Unsupported file format: {value}. Allowed: {[f.value for f in cls]}")
+        raise InvalidFileFormatError(f"Unsupported file format: {value}", details={"allowed": [f.value for f in cls]})
 
     @classmethod
     def is_valid(cls, value: str) -> bool:

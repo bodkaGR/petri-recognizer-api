@@ -2,6 +2,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Query, Header
 from fastapi.params import Depends
 from fastapi.responses import FileResponse
 
+from app.infrastructure.exceptions.petri_exceptions import MissingApiKeyError
 from app.infrastructure.handlers.file_handler import FileHandler
 from app.infrastructure.adapters.petri_recognition_adapter import PetriRecognitionAdapter
 from app.infrastructure.providers.api_key_provider import ApiKeyProvider
@@ -13,7 +14,7 @@ router = APIRouter()
 
 def get_api_key_provider(api_key: str = Header(..., alias="X-Roboflow-API-Key")) -> ApiKeyProvider:
     if not api_key:
-        raise HTTPException(status_code=400, detail="Missing Roboflow API Key")
+        raise MissingApiKeyError("Missing Roboflow API Key")
     return ApiKeyProvider(api_key)
 
 def get_recognition_facade(api_key_provider: ApiKeyProvider = Depends(get_api_key_provider)) -> RecognitionFacade:
@@ -35,15 +36,12 @@ async def recognize(
     Returns generated Petri net file in the requested format
     """
 
-    try:
-        output_path, media_type = await facade.recognize_from_uploads(
-            image, config, requested_file_type
-        )
+    output_path, media_type = await facade.recognize_from_uploads(
+        image, config, requested_file_type
+    )
 
-        return FileResponse(
-            output_path,
-            media_type=media_type,
-            filename=f"recognized_model.{requested_file_type}"
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Recognition failed: {str(e)}")
+    return FileResponse(
+        output_path,
+        media_type=media_type,
+        filename=f"recognized_model.{requested_file_type}"
+    )
