@@ -16,7 +16,7 @@ class RecognitionFacade:
         file_format = FileFormat.from_string(requested_file_type)
 
         # Saving uploaded temporary files
-        image_path = FileHandler.save_upload_tmp(image, ".png")
+        image_path = FileHandler.save_upload_tmp(image, ".png") # TODO: add support of different image formats
         config_path = FileHandler.save_upload_tmp(config, ".yaml")
 
         try:

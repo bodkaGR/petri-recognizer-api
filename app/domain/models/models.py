@@ -194,8 +194,9 @@ class Place:
         self,
         circle: tuple[int, int, int], # (x, y, radius)
         original_detection_data=None, # Placeholder for any original detection data
+        id: str | None = None,
     ):
-        self.id = str(uuid.uuid4())
+        self.id = id or str(uuid.uuid4())
         self.center = Point(circle[0], circle[1])
         self.radius = circle[2]
         self.center.part_of = self # Link back to the Place object
@@ -233,10 +234,20 @@ class Place:
         self.markers = current_sum_of_markers
 
     def get_name(self):
-        if len(self.text) > 0:
-            return " ".join(text.value for text in self.text if text.value.strip() != "")
-        else:
+        if not self.text:
             return ""
+
+        names = []
+        for text in self.text:
+            if isinstance(text, str):
+                val = text.strip()
+            else:
+                val = getattr(text, "value", "").strip()
+
+            if val != "":
+                names.append(val)
+
+        return " ".join(names)
 
     def to_dict(self):
         return {
@@ -266,9 +277,10 @@ class Transition:
         width: int,
         height: int,
         angle: float = 0.0, # Default angle
-        original_detection_data=None, 
+        original_detection_data=None,
+        id: str | None = None,
     ):
-        self.id = str(uuid.uuid4())
+        self.id = id or str(uuid.uuid4())
         self.center = Point(center_coords[0], center_coords[1])
         self.center.part_of = self
 
@@ -310,10 +322,20 @@ class Transition:
         return f"Transition(center={self.center}, height={self.height}, width={self.width}, angle={self.angle})"
     
     def get_name(self):
-        if len(self.text) > 0:
-            return " ".join(text.value for text in self.text if text.value.strip() != "")
-        else:
+        if not self.text:
             return ""
+
+        names = []
+        for text in self.text:
+            if isinstance(text, str):
+                val = text.strip()
+            else:
+                val = getattr(text, "value", "").strip()
+
+            if val != "":
+                names.append(val)
+
+        return " ".join(names)
         
     def __eq__(self, other):
         if not isinstance(other, Transition):
@@ -325,8 +347,17 @@ class Transition:
 
 ### Potentially add an Arc class later if needed to represent the final connections
 class Arc:
-    def __init__(self, source, target, start_point, end_point, points=None, lines=None):
-        self.id = str(uuid.uuid4())
+    def __init__(
+            self,
+            source,
+            target,
+            start_point,
+            end_point,
+            points=None,
+            lines=None,
+            id: str | None = None,
+    ):
+        self.id = id or str(uuid.uuid4())
         self.source = source # Place or Transition object
         self.target = target # Place or Transition object
         self.start_point = start_point # Point object

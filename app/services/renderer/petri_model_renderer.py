@@ -1,0 +1,41 @@
+from typing import override
+
+from app.domain.interfaces.i_renderer import IRenderer
+from app.domain.models.petri_model import PetriModel
+
+from graphviz import Digraph
+
+from config.path_config import get_output_file_path
+
+
+class PetriModelRenderer(IRenderer):
+
+    @override
+    def render(self, model: PetriModel) -> str:
+        dot = Digraph()
+        dot.attr(rankdir="LR")
+
+        for place in model.places:
+            label = place.get_name() or f"P"
+            if place.markers > 0:
+                label += f" ({place.markers})"
+            dot.node(place.id, label=label, shape="circle")
+
+        for transition in model.transitions:
+            label = transition.get_name() or "T"
+            dot.node(transition.id, label=label, shape="rectangle")
+
+        for arc in model.arcs:
+            source_id = arc.source.id if hasattr(arc.source, "id") else arc.source
+            target_id = arc.target.id if hasattr(arc.target, "id") else arc.target
+
+            if source_id and target_id:
+                dot.edge(source_id, target_id, label=str(arc.weight))
+            else:
+                print(f"Skipping arc {arc.id} — missing source or target")
+
+        rendered_filename = "rendered_petri_net"
+        output_path = get_output_file_path(rendered_filename)
+
+        dot.render(filename=output_path, format="png", cleanup=True)
+        return output_path
