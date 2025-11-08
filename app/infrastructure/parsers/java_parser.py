@@ -20,6 +20,7 @@ class JavaParser(IParser):
             name = match.group("name")
             markers = int(match.group("markers"))
             place = Place((100 + idx * 60, 200, 20), id=name)
+            place.text.append(name)
             place.markers = markers
             places.append(place)
 
@@ -27,6 +28,7 @@ class JavaParser(IParser):
         for idx, match in enumerate(transition_pattern.finditer(content)):
             name = match.group("name")
             transition = Transition((100 + idx * 60, 400), 40, 10, id=name)
+            transition.text.append(name)
             transitions.append(transition)
 
         arc_in_pattern = re.compile(r'new\s+ArcIn\(d_P\.get\((?P<p>\d+)\),\s*d_T\.get\((?P<t>\d+)\),\s*(?P<w>\d+)\)')
