@@ -50,7 +50,7 @@ class PNMLParser(IParser):
         if name_el is not None and name_el.text:
             place.text.append(name_el.text.strip())
 
-        if int(markers.text) > 0:
+        if markers is not None and int(markers.text) > 0:
             place.markers += int(markers.text)
 
         return place

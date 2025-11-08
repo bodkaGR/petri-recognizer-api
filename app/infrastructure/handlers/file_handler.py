@@ -6,7 +6,7 @@ from starlette.datastructures import UploadFile
 
 
 class FileHandler:
-    """Handles saving and deleting uploaded files"""
+    """Handles saving, loading and deleting uploaded files"""
 
     @staticmethod
     def save(content: str, file_path: str) -> str:
@@ -14,6 +14,11 @@ class FileHandler:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(content)
         return str(file_path)
+
+    @staticmethod
+    def load(file_path: str) -> str:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return f.read()
 
     @staticmethod
     def save_upload_tmp(upload_file: UploadFile, suffix: str) -> str:
