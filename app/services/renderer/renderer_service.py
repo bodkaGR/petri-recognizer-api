@@ -23,8 +23,6 @@ class RendererService(IRendererService):
         parser = ParserFactory.create(file_format)
         model = parser.parse(file_path)
 
-        # 2. Serialize model to pickle files
-        # self.repository.save(model)
-
+        # 2. Render model to image
         rendered_model_output_path = self.renderer.render(model)
         return rendered_model_output_path

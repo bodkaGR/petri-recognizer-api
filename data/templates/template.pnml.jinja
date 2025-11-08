@@ -5,22 +5,20 @@
             <text>PetriNet</text>
         </name>
         <page id="Page0">
-            <name>
-                <text />
-            </name>
             {% for place in places %}
             <place id="{{place.id}}">
                 <name>
                     <text>{% if place.get_name() != "" %}{{ place.get_name() }}{% else %}P{{ loop.index }}{% endif %}</text>
                 </name>
-                <toolspecific tool="petri-recognizer-api" />
-                <graphics>
-                    <position x="{{place.center.x}}" y="{{place.center.y}}" />
-                    <dimension x="{{place.radius * 2}}" y="{{place.radius * 2}}" />
-                </graphics>
                 <initialMarking>
                     <text>{{place.markers}}</text>
                 </initialMarking>
+                <toolspecific tool="petri-recognizer-api">
+                    <coordinates x="{{place.center.x}}" y="{{place.center.y}}" />
+                </toolspecific>
+                <graphics>
+                    <position x="{{place.center.x}}" y="{{place.center.y}}" />
+                </graphics>
             </place>
             {% endfor %}
             {% for transition in transitions %}
@@ -28,31 +26,22 @@
                 <name>
                     <text>{% if transition.get_name() != "" %}{{ transition.get_name() }}{% else %}T{{ loop.index }}{% endif %}</text>
                 </name>
-                <toolspecific tool="petri-recognizer-api"></toolspecific>
+                <toolspecific tool="petri-recognizer-api">
+                    <coordinates x="{{transition.center.x}}" y="{{transition.center.y}}" />
+                </toolspecific>
                 <graphics>
                     <position x="{{transition.center.x}}" y="{{transition.center.y}}" />
-                    <dimension x="{{transition.width}}" y="{{transition.height}}" />
                 </graphics>
             </transition>
             {% endfor %}
             {% for arc in arcs %}
             <arc id="{{arc.id}}" source="{{arc.source.id}}" target="{{arc.target.id}}">
-                <toolspecific tool="petri-recognizer-api" />
-                <name>
-                    <text>{% if arc.get_name() != "" %}{{ arc.get_name() }}{% else %}T{{ loop.index }}{% endif %}</text>
-                </name>
-                <arctype>
-                    <text>normal</text>
-                </arctype>
                 <inscription>
                     <text>{{ arc.weight }}</text>
                 </inscription>
             </arc>
             {% endfor %}
         </page>
-        <finalmarkings>
-            <marking></marking>
-        </finalmarkings>
     </net>
 </pnml>
 

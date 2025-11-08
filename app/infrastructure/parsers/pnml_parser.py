@@ -5,6 +5,8 @@ from app.domain.models.models import Place, Transition, Arc, Point
 from app.domain.models.petri_model import PetriModel
 import xml.etree.ElementTree as ET
 
+from app.utils.xml_utils import XMLUtils
+
 
 class PNMLParser(IParser):
 
@@ -13,75 +15,78 @@ class PNMLParser(IParser):
         tree = ET.parse(file_path)
         root = tree.getroot()
 
-        ns = self._get_namespace(root)
+        ns = XMLUtils.get_namespace(root)
 
         places, transitions, arcs = [], [], []
 
-        for place_el in self._findall(ns, root, "place"):
+        for place_el in XMLUtils.find_all(root, "place", ns):
             place = self._parse_place(place_el, ns)
             places.append(place)
 
-        for trans_el in self._findall(ns, root, "transition"):
+        for trans_el in XMLUtils.find_all(root, "transition", ns):
             transition = self._parse_transition(trans_el, ns)
             transitions.append(transition)
 
-        for arc_el in self._findall(ns, root, "arc"):
+        for arc_el in XMLUtils.find_all(root, "arc", ns):
             arc = self._parse_arc(arc_el, ns, places, transitions)
             arcs.append(arc)
 
         return PetriModel(places=places, transitions=transitions, arcs=arcs)
 
-    def _findall(self, ns, element, tag):
-        if ns:
-            return element.findall(f".//{{{ns}}}{tag}")
-        return element.findall(f".//{tag}")
+    def _parse_place(self, el, ns) -> Place:
+        """Parse <place> element into Place object"""
+        place_id = el.get("id")
+        position = XMLUtils.find(el, "graphics/position", ns)
+        coordinates = XMLUtils.find(el, "toolspecific/coordinates", ns)
+        markers = XMLUtils.find(el, "initialMarking/text", ns)
+        name_el = XMLUtils.find(el, "name/text", ns)
 
-    def _get_namespace(self, root):
-        """Extracts namespace if exist"""
-        if root.tag.startswith("{"):
-            return root.tag[1:].split("}")[0]
-        return ""
+        x = int(position.get("x")) if position is not None else 0
+        y = int(position.get("y")) if position is not None else 0
+        radius = float(coordinates.get("x")) / 2 if coordinates is not None else 10
 
-    def _parse_place(self, el, ns):
-        graphics = el.find(f".//{{{ns}}}graphics") if ns else el.find(".//graphics")
-        position = graphics.find(f".//{{{ns}}}position") if ns else graphics.find(".//position")
-        dim = graphics.find(f".//{{{ns}}}dimension") if ns else graphics.find(".//dimension")
+        place = Place((x, y, radius), id=place_id)
 
-        id = el.get("id")
-        x = int(position.get("x"))
-        y = int(position.get("y"))
-        radius = float(dim.get("x")) / 2 if dim is not None else 10
-
-        place = Place((x, y, radius), id=id)
-        name_el = el.find(f".//{{{ns}}}name/{{{ns}}}text") if ns else el.find(".//name/text")
         if name_el is not None and name_el.text:
-            place.text.append(name_el.text)
+            place.text.append(name_el.text.strip())
+
+        if int(markers.text) > 0:
+            place.markers += int(markers.text)
+
         return place
 
-    def _parse_transition(self, el, ns):
-        graphics = el.find(f".//{{{ns}}}graphics") if ns else el.find(".//graphics")
-        position = graphics.find(f".//{{{ns}}}position") if ns else graphics.find(".//position")
-        dim = graphics.find(f".//{{{ns}}}dimension") if ns else graphics.find(".//dimension")
+    def _parse_transition(self, el, ns) -> Transition:
+        """Parse <transition> element into Transition object"""
+        trans_id = el.get("id")
+        position = XMLUtils.find(el, "graphics/position", ns)
+        coordinates = XMLUtils.find(el, "toolspecific/coordinates", ns)
+        name_el = XMLUtils.find(el, "name/text", ns)
 
-        id = el.get("id")
         x = int(position.get("x"))
         y = int(position.get("y"))
 
-        width = float(dim.get("x"))
-        height = float(dim.get("y"))
-        transition = Transition((x, y), width, height, id=id)
+        width = float(coordinates.get("x"))
+        height = float(coordinates.get("y"))
+
+        transition = Transition((x, y), width, height, id=trans_id)
+
+        if name_el is not None and name_el.text:
+            transition.text.append(name_el.text.strip())
+
         return transition
 
-    def _parse_arc(self, el, ns, places, transitions):
+    def _parse_arc(self, el, ns, places, transitions) -> Arc:
+        """Parse <arc> element and connect its source and target nodes"""
         source_id = el.get("source")
         target_id = el.get("target")
 
-        all_nodes = {n.id: n for n in (places + transitions)}
+        # Build lookup map for all nodes
+        nodes = {n.id: n for n in (places + transitions)}
 
-        source = all_nodes.get(source_id)
-        target = all_nodes.get(target_id)
+        source = nodes.get(source_id)
+        target = nodes.get(target_id)
 
-        if source is None or target is None:
+        if not source or not target:
             # Log and return None to indicate this arc should be skipped by caller
             missing = []
             if source is None:
@@ -91,63 +96,35 @@ class PNMLParser(IParser):
             print(f"Skipping arc {el.get('id')} — missing {' and '.join(missing)}")
             return None
 
-        # Try to extract start/end point from graphics if present
-
-        graphics = el.find(f".//{{{ns}}}graphics") if ns else el.find(".//graphics")
-        start_point = self._get_point_from_elem(graphics, ns)
-        # Some PNML variants store <start> and <end> inside <graphics> or inside <toolinformation> - try heuristics:
-        # try explicit child named 'start'/'end'
-        if start_point is None:
-            start_el = el.find(f".//{{{ns}}}start") if ns else el.find(".//start")
-            start_point = self._get_point_from_elem(start_el, ns)
-
-        end_point = None
-        if graphics is not None:
-            end_point = self._get_point_from_elem(graphics.find(f".//{{{ns}}}end") if ns else graphics.find(".//end"), ns)
-        if end_point is None:
-            end_el = el.find(f".//{{{ns}}}end") if ns else el.find(".//end")
-            end_point = self._get_point_from_elem(end_el, ns)
-
-        # If no explicit points found, fall back to source/target centers (useful for rendering)
-        if start_point is None:
-            try:
-                # If source has center attribute as Place/Transition with .center
-                start_point = Point(source.center.x, source.center.y)
-            except Exception:
-                start_point = None
-
-        if end_point is None:
-            try:
-                end_point = Point(target.center.x, target.center.y)
-            except Exception:
-                end_point = None
+        start_point = self._get_endpoint(el, ns, "start") or Point(source.center.x, source.center.y)
+        end_point = self._get_endpoint(el, ns, "end") or Point(target.center.x, target.center.y)
 
         # Create Arc object linking the actual node objects
         arc = Arc(source=source, target=target, start_point=start_point, end_point=end_point)
-
-        # inscription / weight
-        inscription = el.find(f".//{{{ns}}}inscription/{{{ns}}}text") if ns else el.find(".//inscription/text")
-        if inscription is not None and inscription.text:
-            try:
-                arc.weight = int(inscription.text.strip())
-            except Exception:
-                # if not an integer, try float then fallback to 1
-                try:
-                    arc.weight = int(float(inscription.text.strip()))
-                except Exception:
-                    arc.weight = 1
-
+        arc.weight = self._parse_weight(el, ns)
         return arc
 
-    def _get_point_from_elem(self, parent, ns):
-        if parent is None:
-            return None
-        pos_el = parent.find(f".//{{{ns}}}position") if ns else parent.find(".//position")
-        if pos_el is None:
+    def _get_endpoint(self, el, ns, tag) -> Point | None:
+        """Extract endpoint <start>/<end> position from arc element"""
+        pos = XMLUtils.find(el, f"{tag}/position", ns)
+        if pos is None:
             return None
         try:
-            x = float(pos_el.get("x", 0))
-            y = float(pos_el.get("y", 0))
-            return Point(int(x), int(y))
-        except Exception:
+            x = float(pos.get("x"))
+            y = float(pos.get("y"))
+            return Point(x, y)
+        except ValueError: # TODO: Add custom exception and handlers
             return None
+
+    def _parse_weight(self, el, ns) -> int:
+        """Extract arc weight from <inscription><text>"""
+        inscription = XMLUtils.find(el, "inscription/text", ns)
+        if inscription is None or not inscription.text:
+            return 1
+        try:
+            return int(inscription.text.strip())
+        except ValueError: # TODO: Add custom exception and handlers
+            try:
+                return int(float(inscription.text.strip()))
+            except Exception: # TODO: Add custom exception and handlers
+                return 1

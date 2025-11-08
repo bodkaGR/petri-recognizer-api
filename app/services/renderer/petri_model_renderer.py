@@ -28,11 +28,8 @@ class PetriModelRenderer(IRenderer):
         for arc in model.arcs:
             source_id = arc.source.id if hasattr(arc.source, "id") else arc.source
             target_id = arc.target.id if hasattr(arc.target, "id") else arc.target
-
-            if source_id and target_id:
-                dot.edge(source_id, target_id, label=str(arc.weight))
-            else:
-                print(f"Skipping arc {arc.id} — missing source or target")
+            weight = arc.weight if arc.weight > 1 else ""
+            dot.edge(source_id, target_id, label=str(weight))
 
         rendered_filename = "rendered_petri_net"
         output_path = get_output_file_path(rendered_filename)
