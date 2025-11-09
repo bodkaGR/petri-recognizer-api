@@ -11,7 +11,6 @@ petri-recognizer-api is a **REST API service** designed to:
 - Return results in one of several formats:
   - **PNML file** (Petri Net Markup Language);
   - **Java method** (for Petri net generation).
-  - **JSON structure**;
 
 ---
 
