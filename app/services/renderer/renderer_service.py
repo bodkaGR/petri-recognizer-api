@@ -8,6 +8,7 @@ from app.domain.interfaces.i_renderer import IRenderer
 from app.domain.interfaces.i_renderer_service import IRendererService
 from app.domain.interfaces.i_repository import IRepository
 from app.domain.models.petri_model import PetriModel
+from app.pipeline.converter import fix_petri_net
 from app.services.recognizer.formatter_factory import FormatterFactory
 from app.services.renderer.parser_factory import ParserFactory
 
@@ -24,6 +25,9 @@ class RendererService(IRendererService):
         parser = ParserFactory.create(file_extension)
         model = parser.parse(file_path)
 
+        # 2. Fix errors in Petri Net if present
+        fixed_model = fix_petri_net(model.places, model.transitions, model.arcs)
+
         # 2. Render model to image
-        rendered_model_output_path = self.renderer.render(model)
+        rendered_model_output_path = self.renderer.render(fixed_model)
         return rendered_model_output_path
