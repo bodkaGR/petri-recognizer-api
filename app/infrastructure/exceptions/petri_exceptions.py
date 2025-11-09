@@ -6,7 +6,7 @@ class MissingApiKeyError(Exception):
         super().__init__(message)
         self.details = details or {}
 
-class InvalidFileFormatError(ValueError):
+class InvalidFileExtensionError(ValueError):
     """Raised when provided file type or extension is invalid"""
 
     def __init__(self, message: str, details: dict | None = None):

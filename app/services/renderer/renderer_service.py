@@ -1,7 +1,8 @@
 from contourpy.util import renderer
 from typing_extensions import override
 
-from app.domain.enums.file_format import FileFormat
+from app.domain.enums.file_format import FileExtension
+from app.domain.enums.petrinet_format import PetriNetExtension
 from app.domain.interfaces.i_parser import IParser
 from app.domain.interfaces.i_renderer import IRenderer
 from app.domain.interfaces.i_renderer_service import IRendererService
@@ -18,9 +19,9 @@ class RendererService(IRendererService):
         self.repository = repository
 
     @override
-    def render_to_image(self, file_path: str, file_format: FileFormat) -> str:
+    def render_to_image(self, file_path: str, file_extension: PetriNetExtension) -> str:
         # 1. Parse received file to PetriModel
-        parser = ParserFactory.create(file_format)
+        parser = ParserFactory.create(file_extension)
         model = parser.parse(file_path)
 
         # 2. Render model to image
