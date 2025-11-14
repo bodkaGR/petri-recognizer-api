@@ -1,4 +1,7 @@
-from fastapi import APIRouter, UploadFile, File, Query, Header
+from datetime import datetime
+
+import httpx
+from fastapi import APIRouter, UploadFile, File, Query, Header, HTTPException
 from fastapi.params import Depends
 from fastapi.responses import FileResponse
 
@@ -67,3 +70,20 @@ async def render(
         media_type="image/png",
         filename="rendered_petri_net.png"
     )
+
+@router.get("/health")
+async def health(api_key: str = Header(..., alias="X-Roboflow-API-Key")):
+    url = f"https://api.roboflow.com/account?api_key={api_key}"
+
+    async with httpx.AsyncClient(timeout=5) as client:
+        try:
+            response = await client.get(url)
+            if response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Invalid Roboflow API key")
+        except httpx.RequestError:
+            raise HTTPException(status_code=503, detail="Cannot reach Roboflow API")
+
+    return {
+        "status": "ok",
+        "roboflow_key_valid": True
+    }

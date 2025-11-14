@@ -15,12 +15,6 @@ class PetriModelRenderer(IRenderer):
         dot = Digraph()
         dot.attr(rankdir="LR")
 
-        # for place in model.places:
-        #     label = place.get_name() or f"P"
-        #     if place.markers > 0:
-        #         label += f" ({place.markers})"
-        #     dot.node(place.id, label=label, shape="circle")
-
         for place in model.places:
             dot.node(
                 place.id,
@@ -29,10 +23,6 @@ class PetriModelRenderer(IRenderer):
                 shape="circle",
                 fixedsize="true"
             )
-
-        # for transition in model.transitions:
-        #     label = transition.get_name() or "T"
-        #     dot.node(transition.id, label=label, shape="rectangle")
 
         for t in model.transitions:
             dot.node(
