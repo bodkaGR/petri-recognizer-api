@@ -1,5 +1,4 @@
 import pickle
-import os
 from typing import override
 
 from app.domain.interfaces.i_repository import IRepository

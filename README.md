@@ -1,7 +1,6 @@
-# Petri nets recognizer FastAPI  
-### FastAPI for Petri Net Recognition from Images
+# Petri Nets Recognizer — FastAPI Service
+### REST API for Automatic Petri Net Recognition from Images
 
----
 
 ## Description
 
@@ -12,14 +11,54 @@ petri-recognizer-api is a **REST API service** designed to:
   - **PNML file** (Petri Net Markup Language);
   - **Java method** (for Petri net generation).
 
----
+## Requirements
+
+### System
+
+* Windows 10 / 11
+* Python 3.10+
+
+### Python dependencies
+
+* ultralytics
+* opencv-python
+* supervision
+* fastapi
+* uvicorn
+* pyyaml
+* numpy
+
+## Project Structure
+
+```
+petri-recognizer-api/
+│
+├── app/
+│   ├── controllers/        
+│   ├── domain/             
+│   ├── infrastructure/     
+│   ├── pipeline/           
+│   ├── services/           
+│   ├── utils/           
+│   └── main.py
+│
+├── config/
+│   ├── algorithm_config/           
+│   └── path_config.py
+│
+├── data/
+│   ├── demos/           
+│   └── templates/
+│
+├── model/
+│   └── arrow-detection-weights.pt
+│
+├── .gitignore
+├── README.md
+└── requirements.txt
+```
 
 ## Getting Started
-
-### Dependencies
-
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
 
 ### Installing
 

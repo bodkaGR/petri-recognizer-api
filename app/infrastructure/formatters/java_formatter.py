@@ -2,7 +2,6 @@ from typing import override
 
 import jinja2
 
-from app.domain.enums.file_format import FileExtension
 from app.domain.enums.petrinet_format import PetriNetExtension
 from app.domain.interfaces.i_formatter import IFormatter
 from app.domain.models.petri_model import PetriModel

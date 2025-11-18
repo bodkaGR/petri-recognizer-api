@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from doctr.models import ocr_predictor
 from app.domain.models.models import Text, Point, Place, Transition, Arc # Import the Text class
-from .commons import filter_enclosed_contours, minmaxToContours, remove_contours, find_closest_distance_to_contour
+from app.pipeline.commons import filter_enclosed_contours, minmaxToContours, remove_contours, find_closest_distance_to_contour
 
 def _geometry_to_absolute_coords(relative_geom: tuple[tuple[float, float], tuple[float, float]], 
                                  img_width: int, img_height: int) -> tuple[tuple[int, int], tuple[int, int]]:

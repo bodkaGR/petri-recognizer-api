@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Any
+from typing import List
 
 from app.domain.models.models import Place, Transition, Arc
 

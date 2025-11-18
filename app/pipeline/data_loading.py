@@ -1,6 +1,5 @@
 import cv2
 import os
-import numpy as np
 
 def preprocess(img, config: dict):
     assert len(img.shape) == 2, "Image must be grayscale"

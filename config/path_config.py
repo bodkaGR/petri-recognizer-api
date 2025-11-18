@@ -7,6 +7,7 @@ _PROJECT_ROOT = os.path.dirname(_CONFIG_DIR_PATH)
 # Base directories
 DATA_DIR = os.path.join(_PROJECT_ROOT, "data")
 CONFIG_DIR = os.path.join(_PROJECT_ROOT, "config")
+MODEL_DIR = os.path.join(_PROJECT_ROOT, "model")
 
 # Data subdirectories
 DEMOS_DIR = os.path.join(DATA_DIR, "demos")
@@ -43,6 +44,9 @@ SUPPORTED_CONFIG_EXTENSIONS = ('.yaml', '.yml')
 # Default configuration
 DEFAULT_CONFIG_PATH = os.path.join(CONFIG_DIR, "algorithm_config", "config.yaml")
 
+# Models files
+MODEL_PATH = os.path.join(MODEL_DIR, "arrow-detection-weights.pt")
+
 def ensure_directories_exist():
     """Create all necessary directories if they don't exist."""
     directories = [
@@ -75,3 +79,6 @@ def get_output_file_path(filename):
 def get_config_download_path():
     """Get the path for config download file."""
     return CONFIG_DOWNLOAD_PATH
+
+def get_arrow_detection_model_path():
+    return MODEL_PATH

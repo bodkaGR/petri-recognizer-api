@@ -1,6 +1,5 @@
 from fastapi import UploadFile
 
-from app.domain.enums.file_format import FileExtension
 from app.domain.enums.petrinet_format import PetriNetExtension
 from app.domain.interfaces.i_renderer_service import IRendererService
 from app.infrastructure.handlers.file_handler import FileHandler

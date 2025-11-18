@@ -1,15 +1,10 @@
-from contourpy.util import renderer
 from typing_extensions import override
 
-from app.domain.enums.file_format import FileExtension
 from app.domain.enums.petrinet_format import PetriNetExtension
-from app.domain.interfaces.i_parser import IParser
 from app.domain.interfaces.i_renderer import IRenderer
 from app.domain.interfaces.i_renderer_service import IRendererService
 from app.domain.interfaces.i_repository import IRepository
-from app.domain.models.petri_model import PetriModel
 from app.pipeline.converter import fix_petri_net
-from app.services.recognizer.formatter_factory import FormatterFactory
 from app.services.renderer.parser_factory import ParserFactory
 
 

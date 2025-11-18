@@ -1,4 +1,3 @@
-from app.domain.enums.file_format import FileExtension
 from app.domain.enums.petrinet_format import PetriNetExtension
 from app.domain.interfaces.i_parser import IParser
 from app.infrastructure.exceptions.petri_exceptions import InvalidFileExtensionError

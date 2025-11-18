@@ -1,17 +1,7 @@
-import pickle
-import pm4py
-from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from collections import Counter, defaultdict
 from typing import List, Tuple
 from app.domain.models.models import Place, Transition, Arc
 from app.domain.models.petri_model import PetriModel
-from config.path_config import (
-    OUTPUT_DIR, TEMPLATES_DIR, VISUALIZATIONS_DIR, PIPELINE_OUTPUT_DIR,
-    PLACES_PKL_PATH, TRANSITIONS_PKL_PATH, ARCS_PKL_PATH,
-    PLACES_FIXED_PKL_PATH, TRANSITIONS_FIXED_PKL_PATH, ARCS_FIXED_PKL_PATH,
-    OUTPUT_PNML_PATH, OUTPUT_PETRIOBJ_PATH, OUTPUT_JSON_PATH, OUTPUT_PNG_PATH, OUTPUT_GV_PATH,
-    WORKING_IMAGE_PATH, ensure_directories_exist, get_visualization_path, get_output_file_path
-)
 
 def process_elements(places: List[Place], transitions: List[Transition], arcs: List[Arc]) -> Tuple[List[Place], List[Transition], List[Arc]]:
     # Process places to remove those with no connected arcs
@@ -114,4 +104,4 @@ def fix_petri_net(places: List[Place], transitions: List[Transition], arcs: List
     print(f"Transitions amount: {len(transitions)}")
     print(f"Arcs amount: {len(arcs)}")
 
-    return PetriModel(places, transitions, arcs)
+    return PetriModel(places, transitions, arcs) 

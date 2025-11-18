@@ -1,6 +1,5 @@
 from fastapi import UploadFile
 
-from app.domain.enums.file_format import FileExtension
 from app.domain.enums.image_format import ImageExtension
 from app.domain.enums.petrinet_format import PetriNetExtension
 from app.domain.interfaces.i_recognizer_service import IRecognizerService
