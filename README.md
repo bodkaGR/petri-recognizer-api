@@ -16,7 +16,8 @@ petri-recognizer-api is a **REST API service** designed to:
 ### System
 
 * Windows 10 / 11
-* Python 3.10+
+* Linux
+* MacOS
 
 ### Python dependencies
 
