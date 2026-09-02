@@ -17,11 +17,6 @@ petri-recognizer-api is a **REST API service** designed to:
 
 ## Getting Started
 
-### Dependencies
-
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
-
 ### Installing
 
 1. Clone petri-recognizer-api project
